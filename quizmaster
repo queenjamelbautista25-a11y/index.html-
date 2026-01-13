@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuizMaster - ICT Quiz</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  font-family: 'Inter', sans-serif;
+}
+</style>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+<div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl">
+
+  <h1 class="text-2xl font-bold text-center mb-4 text-red-800">
+    ICT QUIZ
+  </h1>
+
+  <div id="quiz-box">
+    <p id="question" class="font-semibold mb-4"></p>
+    <div id="choices" class="space-y-2"></div>
+  </div>
+
+  <button
+    id="nextBtn"
+    class="mt-4 w-full bg-red-700 text-white py-2 rounded hidden"
+    onclick="nextQuestion()">
+    Next Question
+  </button>
+
+  <div id="result" class="hidden text-center mt-4">
+    <p class="text-xl font-bold" id="scoreText"></p>
+  </div>
+
+</div>
+
+<script>
+/* ================= 10 ICT QUESTIONS ================= */
+const questions = [
+  {
+    question: "What does ICT stand for?",
+    choices: [
+      "Information and Communication Technology",
+      "Internet and Computer Technique",
+      "Information Computer Technology",
+      "Integrated Communication Tool"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which device is used to input data into a computer?",
+    choices: ["Monitor", "Printer", "Keyboard", "Speaker"],
+    correct: 2
+  },
+  {
+    question: "What part of the computer is considered the brain?",
+    choices: ["RAM", "Hard Drive", "Motherboard", "CPU"],
+    correct: 3
+  },
+  {
+    question: "Which of the following is an example of system software?",
+    choices: [
+      "Microsoft Word",
+      "Windows Operating System",
+      "Google Chrome",
+      "Adobe Photoshop"
+    ],
+    correct: 1
+  },
+  {
+    question: "What does RAM stand for?",
+    choices: [
+      "Read Access Memory",
+      "Random Access Memory",
+      "Run All Memory",
+      "Readable Active Memory"
+    ],
+    correct: 1
+  },
+  {
+    question: "Which device is used to produce a hard copy of a document?",
+    choices: ["Monitor", "Printer", "Speaker", "Keyboard"],
+    correct: 1
+  },
+  {
+    question: "Which device is used to connect a computer to the internet?",
+    choices: ["Modem", "Scanner", "Printer", "Flash Drive"],
+    correct: 0
+  },
+  {
+    question: "What does WWW stand for?",
+    choices: [
+      "World Wide Web",
+      "Wide World Web",
+      "Web World Wide",
+      "World Web Window"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a web browser?",
+    choices: [
+      "Microsoft Excel",
+      "Google Chrome",
+      "Windows",
+      "Android"
+    ],
+    correct: 1
+  },
+  {
+    question: "What is the main purpose of a firewall?",
+    choices: [
+      "To cool the computer",
+      "To protect against unauthorized access",
+      "To speed up the computer",
+      "To store data"
+    ],
+    correct: 1
+  }
+];
+
+/* ================= QUIZ LOGIC ================= */
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
+
+const questionEl = document.getElementById("question");
+const choicesEl = document.getElementById("choices");
+const nextBtn = document.getElementById("nextBtn");
+const resultEl = document.getElementById("result");
+const scoreText = document.getElementById("scoreText");
+
+function loadQuestion() {
+  answered = false;
+  nextBtn.classList.add("hidden");
+
+  const q = questions[currentQuestion];
+  questionEl.textContent = `${currentQuestion + 1}. ${q.question}`;
+  choicesEl.innerHTML = "";
+
+  q.choices.forEach((choice, index) => {
+    const btn = document.createElement("button");
+    btn.textContent = choice;
+    btn.className = "w-full border p-2 rounded hover:bg-gray-100";
+    btn.onclick = () => checkAnswer(index, btn);
+    choicesEl.appendChild(btn);
+  });
+}
+
+function checkAnswer(selectedIndex) {
+  if (answered) return;
+  answered = true;
+
+  const correctIndex = questions[currentQuestion].correct;
+  const buttons = choicesEl.querySelectorAll("button");
+
+  buttons.forEach((btn, idx) => {
+    if (idx === correctIndex) {
+      btn.classList.add("bg-green-200");
+    }
+    if (idx === selectedIndex && idx !== correctIndex) {
+      btn.classList.add("bg-red-200");
+    }
+    btn.disabled = true;
+  });
+
+  if (selectedIndex === correctIndex) {
+    score++;
+  }
+
+  nextBtn.classList.remove("hidden");
+}
+
+function nextQuestion() {
+  currentQuestion++;
+  if (currentQuestion < questions.length) {
+    loadQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById("quiz-box").classList.add("hidden");
+  nextBtn.classList.add("hidden");
+  resultEl.classList.remove("hidden");
+  scoreText.textContent = `You scored ${score} out of ${questions.length}`;
+}
+
+/* Start Quiz */
+loadQuestion();
+</script>
+
+</body>
+</html>
